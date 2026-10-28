@@ -142,3 +142,10 @@ tr.group-row td { color: var(--accent); font-weight: 600; padding-top: 16px; bor
 .progress { height: 6px; background: var(--panel-2); border-radius: 3px; overflow: hidden; }
 .progress > div { height: 100%; background: var(--accent); transition: width .2s; }
 .save-error { background: #3a1a16; border: 1px solid var(--danger); color: #ffd7d0; border-radius: 6px; padding: 8px 12px; margin-bottom: 14px; }
+
+/* Étagère : groupes par réalisateur posés côte à côte */
+.shelf { display: flex; flex-wrap: wrap; gap: 22px 18px; align-items: flex-start; }
+.shelf-group { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+.shelf-label { color: var(--accent); font-weight: 600; font-size: 12px; padding-bottom: 4px; border-bottom: 2px solid var(--accent); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 100%; }
+.shelf-cards { display: flex; gap: 12px; flex-wrap: wrap; }
+.shelf-cards .card { width: 140px; }

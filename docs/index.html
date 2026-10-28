@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Blu-ray Collection — ta collection de films physiques</title>
+<meta name="description" content="Gère ta collection physique de films : Blu-ray, 4K, DVD, steelbooks et jaquettes custom. Fiches TMDB, import Letterboxd, statistiques. Application de bureau locale (Windows & Linux).">
+<link rel="icon" href="assets/icon.png">
+<meta property="og:title" content="Blu-ray Collection">
+<meta property="og:description" content="Ta collection de films physiques, rangée comme ton étagère — TMDB + Letterboxd, local et hors-ligne.">
+<meta property="og:image" content="assets/collection.png">
+<style>
+  :root{
+    --bg:#111114; --surface:#18181d; --surface2:#202027; --border:#2c2c35;
+    --ink:#ececf1; --dim:#a7a7b4; --faint:#737382; --accent:#f2b544; --accent-ink:#1a1405; --blue:#2b6cf0;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0;font-family:"Inter","Segoe UI",system-ui,-apple-system,Arial,sans-serif;
+    background:var(--bg);color:var(--ink);-webkit-font-smoothing:antialiased;line-height:1.6}
+  a{color:var(--accent);text-decoration:none}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+  header{padding:64px 0 40px;text-align:center;
+    background:radial-gradient(1100px 480px at 50% -10%,rgba(43,108,240,.22),transparent),
+               radial-gradient(700px 360px at 80% 0%,rgba(242,181,68,.12),transparent)}
+  .logo{width:104px;height:104px;filter:drop-shadow(0 12px 30px rgba(0,0,0,.5))}
+  h1{font-size:46px;letter-spacing:-.02em;margin:16px 0 6px;font-weight:800}
+  .tagline{color:var(--dim);font-size:19px;max-width:640px;margin:0 auto 26px}
+  .btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+  .btn{display:inline-flex;align-items:center;gap:8px;padding:13px 22px;border-radius:999px;
+    font-weight:700;font-size:15px;border:1px solid var(--border);background:var(--surface);color:var(--ink);
+    transition:transform .08s, background .15s}
+  .btn:hover{transform:translateY(-2px);background:var(--surface2)}
+  .btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+  .platforms{color:var(--faint);font-size:13px;margin-top:14px}
+  .hero{margin:44px auto 0;display:block;max-width:92%;border-radius:14px;
+    border:1px solid var(--border);box-shadow:0 18px 60px rgba(0,0,0,.5)}
+  section{padding:56px 0}
+  h2{font-size:28px;letter-spacing:-.01em;text-align:center;margin:0 0 8px;font-weight:750}
+  .lead{color:var(--dim);text-align:center;margin:0 auto 34px;max-width:660px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:16px}
+  .card{background:var(--surface);border:1px solid var(--border);border-radius:16px;padding:20px}
+  .card .ic{font-size:24px}
+  .card h3{margin:10px 0 6px;font-size:16.5px}
+  .card p{margin:0;color:var(--dim);font-size:14px}
+  .shots{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  .shots figure{margin:0}
+  .shots img{width:100%;border-radius:12px;border:1px solid var(--border);display:block}
+  .shots figcaption{color:var(--faint);font-size:13px;text-align:center;margin-top:6px}
+  ol.steps{max-width:720px;margin:0 auto;color:var(--dim);padding-left:22px}
+  ol.steps li{margin-bottom:10px}
+  ol.steps b{color:var(--ink)}
+  .note{background:var(--surface);border:1px solid var(--border);border-left:3px solid var(--accent);
+    border-radius:12px;padding:16px 18px;color:var(--dim);font-size:14.5px;max-width:760px;margin:24px auto 0}
+  footer{padding:40px 0 60px;text-align:center;color:var(--faint);font-size:14px;border-top:1px solid var(--border)}
+  @media(max-width:640px){h1{font-size:34px}.shots{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <img class="logo" src="assets/icon.png" alt="Logo Blu-ray Collection">
+    <h1>Blu-ray Collection</h1>
+    <p class="tagline">Ta collection de films physiques, rangée comme ton étagère. Fiches TMDB, données Letterboxd, statistiques — tout reste sur ton ordinateur.</p>
+    <div class="btns">
+      <a class="btn primary" href="https://github.com/M-1u/bluray-collection/releases/latest">⬇️ Télécharger</a>
+      <a class="btn" href="https://github.com/M-1u/bluray-collection">Code source sur GitHub</a>
+    </div>
+    <div class="platforms">Windows · Linux (AppImage, .deb) · gratuit et open source (MIT)</div>
+    <img class="hero" src="assets/collection.png" alt="La collection rangée par réalisateur">
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2>Tout ce qu'il faut pour une collection</h2>
+    <p class="lead">Ce que tu possèdes, ce que tu fabriques, ce que tu veux acheter — et ce que tu en as pensé.</p>
+    <div class="grid">
+      <div class="card"><div class="ic">📀</div><h3>Plusieurs éditions par film</h3><p>Blu-ray, 4K, DVD, steelbook, custom : un même film peut être possédé dans une édition et voulu dans une autre.</p></div>
+      <div class="card"><div class="ic">🗂️</div><h3>Rangé comme ton étagère</h3><p>Par nom de famille du réalisateur puis par année, avec un intercalaire par réalisateur. Clé de rangement manuelle pour les cas particuliers.</p></div>
+      <div class="card"><div class="ic">✂️</div><h3>Suivi des customs</h3><p>Pochette à créer, créée, imprimée en attente de boîtier, terminée : chaque jaquette avance d'un clic.</p></div>
+      <div class="card"><div class="ic">🎬</div><h3>Fiches TMDB</h3><p>Recherche un film, choisis l'édition : affiche, réalisateurs, genres, pays, durée et synopsis arrivent tout seuls.</p></div>
+      <div class="card"><div class="ic">🟢</div><h3>Import Letterboxd</h3><p>Vus, notes, critiques, likes, watchlist. Réimporte quand tu veux : seules les données Letterboxd sont remplacées.</p></div>
+      <div class="card"><div class="ic">📊</div><h3>Statistiques</h3><p>Formats, réalisateurs, décennies, possédés pas encore vus, films adorés mais pas encore achetés, les plus revus…</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <h2>Aperçu</h2>
+    <p class="lead">Une interface sombre, centrée sur les affiches.</p>
+    <div class="shots">
+      <figure><img src="assets/detail.png" alt="Fiche d'un film"><figcaption>La fiche d'un film</figcaption></figure>
+      <figure><img src="assets/stats.png" alt="Statistiques"><figcaption>Les statistiques</figcaption></figure>
+      <figure><img src="assets/custom.png" alt="Jaquettes custom"><figcaption>Le suivi des customs</figcaption></figure>
+      <figure><img src="assets/table.png" alt="Vue tableau"><figcaption>La vue tableau</figcaption></figure>
+    </div>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <h2>Premiers pas</h2>
+    <ol class="steps">
+      <li><b>Installe</b> la dernière version depuis la page des <a href="https://github.com/M-1u/bluray-collection/releases/latest">releases</a>.</li>
+      <li><b>Ajoute une clé TMDB</b> (gratuite sur <a href="https://www.themoviedb.org">themoviedb.org</a>, rubrique API) dans les Réglages.</li>
+      <li><b>Importe ton export Letterboxd</b> (facultatif) : tes notes et critiques apparaissent sur tes films, et ta collection peut être pré-remplie depuis une liste « Steelbook &amp; Blu-Ray ».</li>
+      <li><b>Ajoute tes films</b> et range-les.</li>
+    </ol>
+    <p class="note">Tes données restent dans un fichier local (<code>collection.json</code>), avec une sauvegarde avant chaque import. Le seul service contacté est TMDB, pour les fiches et les affiches.</p>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap">
+    Blu-ray Collection · licence MIT · <a href="https://github.com/M-1u/bluray-collection">GitHub</a><br>
+    Ce produit utilise l'API TMDB mais n'est ni approuvé ni certifié par TMDB. Non affilié à Letterboxd.
+  </div>
+</footer>
+
+</body>
+</html>

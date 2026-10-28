@@ -1,0 +1,55 @@
+name: Build & Release
+
+# Pousse un tag "vX.Y.Z" (correspondant à la version dans package.json) pour
+# construire et publier automatiquement une release Windows + Linux.
+# Le déclenchement manuel ("Run workflow") construit les binaires en artefacts
+# téléchargeables, sans créer de release.
+
+on:
+  push:
+    tags: ["v*"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - run: npm ci
+
+      - run: npm test
+
+      - run: npm run build
+
+      - name: Package (publie sur un tag, sinon build seul)
+        run: npx electron-builder --publish ${{ startsWith(github.ref, 'refs/tags/') && 'always' || 'never' }}
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        # Signature Windows (optionnelle, désactivée par défaut) : pour signer l'exe
+        # et supprimer l'alerte SmartScreen, ajoute les secrets de dépôt CSC_LINK
+        # (certificat .pfx en base64) et CSC_KEY_PASSWORD, puis rajoute-les sous `env:`
+        # ci-dessus. Sans certificat, laisse tel quel (l'exe reste non signé).
+
+      - name: Artefacts (exécutions manuelles)
+        if: ${{ github.event_name == 'workflow_dispatch' }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: bluray-collection-${{ matrix.os }}
+          path: |
+            release/*.AppImage
+            release/*.exe
+            release/*.deb
+          if-no-files-found: ignore

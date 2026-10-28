@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "license": "MIT",
-  "description": "Blu-ray Collection — gestion de collection physique de films, TMDB + Letterboxd",
+  "description": "Gestion de collection physique de films (Blu-ray, 4K, steelbooks, customs) — TMDB + Letterboxd, hors-ligne",
   "main": "electron/main.cjs",
   "scripts": {
     "dev:vite": "vite",
@@ -32,10 +32,7 @@
     "vitest": "^2.1.9",
     "wait-on": "^8.0.5"
   },
-  "author": {
-    "name": "Meli",
-    "email": "304867549+M-1u@users.noreply.github.com"
-  },
+  "author": "Méli",
   "build": {
     "appId": "app.blurayCollection.desktop",
     "productName": "Blu-ray Collection",
@@ -56,18 +53,25 @@
         "deb"
       ],
       "category": "Utility",
-      "maintainer": "Meli <304867549+M-1u@users.noreply.github.com>"
+      "maintainer": "Méli <304867549+M-1u@users.noreply.github.com>"
     },
     "win": {
       "target": [
         "nsis"
-      ]
+      ],
+      "icon": "build/icon.ico"
     },
     "nsis": {
       "oneClick": false,
       "allowToChangeInstallationDirectory": true
     },
-    "publish": null
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "M-1u",
+        "repo": "bluray-collection"
+      }
+    ]
   },
   "homepage": "https://github.com/M-1u/bluray-collection"
 }
