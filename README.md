@@ -47,8 +47,8 @@
 
 Télécharge la dernière version sur la page des [**releases**](https://github.com/M-1u/bluray-collection/releases/latest) :
 
-- **Linux** — `Blu-ray Collection-x.y.z.AppImage` (rends-le exécutable puis lance-le) ou le paquet `.deb`.
-- **Windows** — `Blu-ray Collection Setup x.y.z.exe`. L'installeur n'est pas signé : Windows SmartScreen peut afficher un avertissement (« Informations complémentaires » → « Exécuter quand même »).
+- **Linux** — `Blu-ray-Collection-x.y.z.AppImage` (rends-le exécutable puis lance-le) ou le paquet `.deb`.
+- **Windows** — `Blu-ray-Collection-Setup-x.y.z.exe`. L'installeur n'est pas signé : Windows SmartScreen peut afficher un avertissement (« Informations complémentaires » → « Exécuter quand même »).
 
 ## Premiers pas
 
