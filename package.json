@@ -12,7 +12,9 @@
     "build": "vite build",
     "start": "npm run build && electron .",
     "test": "vitest run",
-    "dist": "npm run build && electron-builder"
+    "dist": "npm run build && electron-builder",
+    "dist:linux": "npm run build && electron-builder --linux",
+    "dist:win": "npm run build && electron-builder --win"
   },
   "dependencies": {
     "fflate": "^0.8.3",
@@ -29,5 +31,43 @@
     "vite": "^5.4.21",
     "vitest": "^2.1.9",
     "wait-on": "^8.0.5"
-  }
+  },
+  "author": {
+    "name": "Meli",
+    "email": "304867549+M-1u@users.noreply.github.com"
+  },
+  "build": {
+    "appId": "app.blurayCollection.desktop",
+    "productName": "Blu-ray Collection",
+    "executableName": "bluray-collection",
+    "icon": "build/icon.png",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**",
+      "electron/**",
+      "!electron/**/*.test.js",
+      "package.json"
+    ],
+    "linux": {
+      "target": [
+        "AppImage",
+        "deb"
+      ],
+      "category": "Utility",
+      "maintainer": "Meli <304867549+M-1u@users.noreply.github.com>"
+    },
+    "win": {
+      "target": [
+        "nsis"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "publish": null
+  },
+  "homepage": "https://github.com/M-1u/bluray-collection"
 }
