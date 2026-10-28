@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import { parseLetterboxdFiles } from '../lib/letterboxd.js';
 import { buildImportPreview, applyImport } from '../lib/importFlow.js';
 import { matchFilms, runPool, seedCandidates } from '../lib/importRunner.js';
@@ -28,6 +28,7 @@ export default function ImportView({ state, update }) {
   const [progress, setProgress] = useState({ done: 0, total: 0 });
   const [summary, setSummary] = useState(null);
   const noKey = !state.settings.tmdbApiKey;
+  const running = useRef(false);
 
   const start = async () => {
     setError(null);
@@ -62,6 +63,8 @@ export default function ImportView({ state, update }) {
   };
 
   const validate = async () => {
+    if (running.current) return; // double-clic : une seule validation
+    running.current = true;
     setPhase('applying');
     try {
       await window.api.backup();
@@ -93,6 +96,8 @@ export default function ImportView({ state, update }) {
     } catch (err) {
       setError(errorMessage(err));
       setPhase('review');
+    } finally {
+      running.current = false;
     }
   };
 

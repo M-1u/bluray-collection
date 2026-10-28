@@ -31,7 +31,7 @@ function CorruptScreen({ loadError, restore }) {
 }
 
 export default function App() {
-  const { state, update, loadError, restore } = useCollection();
+  const { state, update, loadError, saveError, restore } = useCollection();
   const [view, setView] = useState('owned');
   const [detailId, setDetailId] = useState(null);
   const [adding, setAdding] = useState(null); // état par défaut de l'ajout ('possede' | 'custom' | 'a_acheter')
@@ -51,6 +51,7 @@ export default function App() {
     <div className="app">
       <Sidebar view={view} setView={setView} counts={counts} />
       <main className="main">
+        {saveError && <div className="save-error">Échec de l'enregistrement : {saveError}. Tes dernières modifications ne sont pas sauvegardées.</div>}
         {view === 'owned' && <OwnedView {...props} />}
         {view === 'custom' && <CustomView {...props} />}
         {view === 'wishlist' && <WishlistView {...props} />}

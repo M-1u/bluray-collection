@@ -105,8 +105,8 @@ describe('seed', () => {
     expect(s.matches['twin peaks|1992']).toBe(1);
     expect(s.seededFromLetterboxdList).toBe(true);
   });
-  it('seedFromList deux fois lève une erreur', () => {
-    const s = seedFromList(emptyState(), []);
-    expect(() => seedFromList(s, [])).toThrow('Pré-remplissage déjà effectué');
+  it('seedFromList deux fois ne refait rien', () => {
+    const s = seedFromList(emptyState(), [{ lbKey: 'twin peaks|1992', tmdbId: 1, film, description: '' }]);
+    expect(seedFromList(s, [{ lbKey: 'x|2000', tmdbId: 2, film: { ...film, tmdbId: 2 }, description: '' }])).toBe(s);
   });
 });

@@ -141,3 +141,4 @@ tr.group-row td { color: var(--accent); font-weight: 600; padding-top: 16px; bor
 .form-grid { display: grid; grid-template-columns: 140px 1fr; gap: 10px 12px; align-items: center; max-width: 640px; }
 .progress { height: 6px; background: var(--panel-2); border-radius: 3px; overflow: hidden; }
 .progress > div { height: 100%; background: var(--accent); transition: width .2s; }
+.save-error { background: #3a1a16; border: 1px solid var(--danger); color: #ffd7d0; border-radius: 6px; padding: 8px 12px; margin-bottom: 14px; }

@@ -1,22 +1,26 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { emptyState } from './lib/model.js';
+import { createSaver } from './lib/saver.js';
 
 // Message d'erreur lisible depuis un appel IPC (retire le préfixe d'Electron).
 export function errorMessage(err) {
   return String(err?.message || err).replace(/^Error invoking remote method '[^']+': (\w*Error: )?/, '');
 }
 
-export function posterUrl(film) {
-  if (!film) return null;
-  return `poster://${film.tmdbId}${film.posterPath ? `?p=${encodeURIComponent(film.posterPath)}` : ''}`;
-}
+export { posterUrl } from './lib/poster.js';
 
 // État de l'app : chargé au démarrage, sauvegardé (différé) à chaque mise à jour.
 export function useCollection() {
   const [state, setState] = useState(null);
   const [loadError, setLoadError] = useState(null);
-  const pending = useRef(null);
-  const timer = useRef(null);
+  const [saveError, setSaveError] = useState(null);
+  const saver = useRef(null);
+  if (!saver.current) {
+    saver.current = createSaver({
+      save: (s) => window.api.saveState(s),
+      onError: (err) => setSaveError(err ? errorMessage(err) : null),
+    });
+  }
 
   useEffect(() => {
     window.api.loadState().then((res) => {
@@ -24,7 +28,8 @@ export function useCollection() {
       else setState({ ...emptyState(), ...(res.state || {}) });
     });
     const flush = () => {
-      if (pending.current) window.api.saveStateSync(pending.current);
+      const pending = saver.current.pending();
+      if (pending) window.api.saveStateSync(pending);
     };
     window.addEventListener('beforeunload', flush);
     return () => window.removeEventListener('beforeunload', flush);
@@ -33,14 +38,7 @@ export function useCollection() {
   const update = useCallback((fn) => {
     setState((prev) => {
       const next = fn(prev);
-      if (next !== prev) {
-        pending.current = next;
-        clearTimeout(timer.current);
-        timer.current = setTimeout(() => {
-          window.api.saveState(pending.current);
-          pending.current = null;
-        }, 300);
-      }
+      if (next !== prev) saver.current.schedule(next);
       return next;
     });
   }, []);
@@ -51,5 +49,5 @@ export function useCollection() {
     setState({ ...emptyState(), ...restored });
   }, []);
 
-  return { state, update, loadError, restore };
+  return { state, update, loadError, saveError, restore };
 }

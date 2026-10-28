@@ -16,16 +16,19 @@ function splitTags(s) {
   return (s || '').split(',').map((t) => t.trim()).filter(Boolean);
 }
 
-// Export de liste : 4 lignes d'en-tête (version, en-têtes méta, méta, vide),
-// puis le tableau Position,Name,Year,URL,Description.
+// Export de liste : bloc de méta (version, en-têtes, méta — la description peut
+// tenir sur plusieurs lignes), puis le tableau qui commence à la ligne « Position,… ».
 export function parseListCsv(text) {
-  const lines = text.replace(/^﻿/, '').split(/\r?\n/);
-  const meta = Papa.parse(lines.slice(1, 3).join('\n'), { header: true }).data[0] || {};
-  const items = rows(lines.slice(4).join('\n')).map((r) => ({
-    position: Number(r.Position),
-    name: r.Name,
-    year: Number(r.Year),
-    description: r.Description || '',
+  const table = Papa.parse(text.replace(/^\uFEFF/, ''), { skipEmptyLines: true }).data;
+  const start = table.findIndex((r) => r[0] === 'Position');
+  const meta = Object.fromEntries((table[1] || []).map((h, i) => [h, table[2]?.[i]]));
+  const header = table[start] || [];
+  const col = (name) => header.indexOf(name);
+  const items = start < 0 ? [] : table.slice(start + 1).map((r) => ({
+    position: Number(r[col('Position')]),
+    name: r[col('Name')],
+    year: Number(r[col('Year')]),
+    description: r[col('Description')] || '',
   }));
   return { name: meta.Name || '', items };
 }

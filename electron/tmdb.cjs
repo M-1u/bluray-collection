@@ -5,7 +5,10 @@ const path = require('node:path');
 const API = 'https://api.themoviedb.org/3';
 const IMAGES = 'https://image.tmdb.org/t/p/w342';
 
-function createTmdb({ apiKey, fetch = globalThis.fetch }) {
+const RETRIES = 3;
+const defaultSleep = (ms) => new Promise((r) => setTimeout(r, ms));
+
+function createTmdb({ apiKey, fetch = globalThis.fetch, sleep = defaultSleep }) {
   const isV3 = (apiKey || '').length === 32;
 
   async function get(pathname, params = {}) {
@@ -17,11 +20,22 @@ function createTmdb({ apiKey, fetch = globalThis.fetch }) {
     const headers = { Accept: 'application/json' };
     if (isV3) url.searchParams.set('api_key', apiKey);
     else headers.Authorization = `Bearer ${apiKey}`;
+    // Réessaie les erreurs réseau, 429 et 5xx (Retry-After respecté), jamais les 4xx.
     let res;
-    try {
-      res = await fetch(url.toString(), { headers });
-    } catch {
-      throw new Error('TMDB injoignable : vérifie ta connexion');
+    for (let attempt = 1; ; attempt++) {
+      try {
+        res = await fetch(url.toString(), { headers });
+      } catch {
+        if (attempt >= RETRIES) throw new Error('TMDB injoignable : vérifie ta connexion');
+        await sleep(1000 * attempt);
+        continue;
+      }
+      if ((res.status === 429 || res.status >= 500) && attempt < RETRIES) {
+        const retryAfter = Number(res.headers?.get?.('Retry-After'));
+        await sleep(retryAfter > 0 ? retryAfter * 1000 : 1000 * attempt);
+        continue;
+      }
+      break;
     }
     if (res.status === 401) throw new Error('Clé TMDB invalide');
     if (!res.ok) throw new Error(`Erreur TMDB (${res.status})`);

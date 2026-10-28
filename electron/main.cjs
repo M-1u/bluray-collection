@@ -5,6 +5,7 @@ const { pathToFileURL } = require('node:url');
 const { createStore, resolveDataDir, CorruptDataError } = require('./store.cjs');
 const { createTmdb } = require('./tmdb.cjs');
 const { readZip } = require('./zip.cjs');
+const { parsePosterUrl } = require('./posterUrl.cjs');
 
 const IS_DEV = process.env.BLURAY_DEV === '1';
 
@@ -22,11 +23,11 @@ function rememberKey(state) {
   tmdbApiKey = state?.settings?.tmdbApiKey || '';
 }
 
-// poster://<tmdbId>?p=<poster_path TMDB> : sert l'affiche en cache, la télécharge sinon.
+// poster://img/<tmdbId>?p=<poster_path TMDB> : sert l'affiche en cache, la télécharge sinon.
 async function handlePoster(request) {
-  const url = new URL(request.url);
-  const id = url.hostname.replace(/\D/g, '');
-  const posterPath = url.searchParams.get('p');
+  const parsed = parsePosterUrl(request.url);
+  if (!parsed) return new Response('', { status: 404 });
+  const { id, posterPath } = parsed;
   const file = store.posterPath(id);
   if (!fs.existsSync(file)) {
     if (!posterPath) return new Response('', { status: 404 });

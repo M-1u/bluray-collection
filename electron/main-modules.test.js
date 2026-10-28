@@ -129,3 +129,40 @@ describe('readZip', () => {
     expect(readZip(Buffer.from(buf))).toEqual({ 'watched.csv': 'Date,Name\n', 'lists/x.csv': 'é' });
   });
 });
+
+describe('I1 parsePosterUrl', () => {
+  const { parsePosterUrl } = require('./posterUrl.cjs');
+  it('lit l\'id dans le chemin et le poster_path TMDB', () => {
+    expect(parsePosterUrl('poster://img/267?p=%2Fa%20b.jpg')).toEqual({ id: '267', posterPath: '/a b.jpg' });
+    expect(parsePosterUrl('poster://img/2817')).toEqual({ id: '2817', posterPath: null });
+  });
+  it('rejette un id non numérique', () => {
+    expect(parsePosterUrl('poster://img/..%2Fx')).toBeNull();
+    expect(parsePosterUrl('poster://0.0.1.11/')).toBeNull();
+  });
+});
+
+describe('I6 tmdb retry', () => {
+  it('réessaie après un 429 en respectant Retry-After', async () => {
+    const waits = [];
+    let n = 0;
+    const fetch = async () => (++n === 1
+      ? { ok: false, status: 429, headers: { get: () => '2' }, json: async () => ({}) }
+      : { ok: true, status: 200, json: async () => ({ results: [{ id: 1 }] }) });
+    const tmdb = createTmdb({ apiKey: 'x'.repeat(32), fetch, sleep: async (ms) => waits.push(ms) });
+    expect(await tmdb.search('a')).toEqual([{ id: 1 }]);
+    expect(waits).toEqual([2000]);
+  });
+  it('réessaie une erreur réseau puis abandonne après 3 tentatives', async () => {
+    let n = 0;
+    const tmdb = createTmdb({ apiKey: 'x'.repeat(32), fetch: async () => { n++; throw new TypeError('fetch failed'); }, sleep: async () => {} });
+    await expect(tmdb.search('a')).rejects.toThrow('TMDB injoignable');
+    expect(n).toBe(3);
+  });
+  it('ne réessaie pas un 401', async () => {
+    let n = 0;
+    const tmdb = createTmdb({ apiKey: 'x'.repeat(32), fetch: async () => { n++; return { ok: false, status: 401 }; }, sleep: async () => {} });
+    await expect(tmdb.search('a')).rejects.toThrow('Clé TMDB invalide');
+    expect(n).toBe(1);
+  });
+});
