@@ -1,6 +1,6 @@
 {
   "name": "bluray-collection",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "license": "MIT",
   "description": "Gestion de collection physique de films (Blu-ray, 4K, steelbooks, customs) — TMDB + Letterboxd, hors-ligne",
@@ -69,7 +69,8 @@
       {
         "provider": "github",
         "owner": "M-1u",
-        "repo": "bluray-collection"
+        "repo": "bluray-collection",
+        "releaseType": "release"
       }
     ]
   },
