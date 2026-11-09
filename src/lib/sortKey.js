@@ -10,6 +10,9 @@ const EAST_ASIAN_SURNAMES = new Set([
 // seulement devant un prénom à tiret (Lee Chang-dong, Kim Ki-duk).
 const AMBIGUOUS_SURNAMES = new Set(['lee', 'kim', 'choi', 'shin', 'yoon', 'jang', 'lim', 'chan', 'ho', 'song']);
 
+// Particules qui font partie du nom de famille (De Palma, Van Sant, del Toro, von Trier).
+const PARTICLES = new Set(['de', 'del', 'della', 'di', 'da', 'du', 'van', 'von', 'der', 'den', 'ter', 'le', 'la', 'dos', 'das']);
+
 function familyNameFirst([first, given]) {
   return EAST_ASIAN_SURNAMES.has(first) || (AMBIGUOUS_SURNAMES.has(first) && given.includes('-'));
 }
@@ -21,6 +24,8 @@ export function sortKey(film) {
   if (!first) return '~';
   const parts = normalize(first).split(' ');
   if (parts.length === 2 && familyNameFirst(parts)) return `${parts[0]}, ${parts[1]}`;
+  const particle = parts.findIndex((p, i) => i > 0 && i < parts.length - 1 && PARTICLES.has(p));
+  if (particle !== -1) return `${parts.slice(particle).join(' ')}, ${parts.slice(0, particle).join(' ')}`;
   const last = parts.pop();
   return parts.length ? `${last}, ${parts.join(' ')}` : last;
 }

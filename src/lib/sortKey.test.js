@@ -31,6 +31,13 @@ describe('sortKey', () => {
     expect(sortKey(f(['Hirokazu Kore-eda'], 2018))).toBe('kore-eda, hirokazu');
     expect(sortKey(f(['Kim Nguyen'], 2012))).toBe('nguyen, kim');
   });
+  it('garde la particule avec le nom de famille', () => {
+    expect(sortKey(f(['Brian De Palma'], 1976))).toBe('de palma, brian');
+    expect(sortKey(f(['Gus Van Sant'], 1997))).toBe('van sant, gus');
+    expect(sortKey(f(['Guillermo del Toro'], 2006))).toBe('del toro, guillermo');
+    expect(sortKey(f(['Lars von Trier'], 2003))).toBe('von trier, lars');
+    expect(sortKey(f(['Francis Ford Coppola'], 1972))).toBe('coppola, francis ford');
+  });
   it('place les films sans réalisateur en fin', () => {
     expect(sortKey(f([], 1990))).toBe('~');
   });
