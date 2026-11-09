@@ -16,7 +16,7 @@ function FilmLinks({ films, openFilm, extra }) {
   return (
     <div className="link-list">
       {films.map((f, i) => (
-        <button key={f.tmdbId ?? i} onClick={() => openFilm(f.tmdbId)}>
+        <button key={f.tmdbId ?? i} onClick={() => openFilm(f.tmdbId, films.map((x) => x.tmdbId))}>
           {displayTitle(f)} <span className="muted">({f.year}){extra ? extra(f, i) : ''}</span>
         </button>
       ))}

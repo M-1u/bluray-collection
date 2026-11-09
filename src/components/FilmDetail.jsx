@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { addEdition, updateEdition, deleteEdition, setSortKeyOverride, STATE_LABELS, CUSTOM_STATUS_LABELS } from '../lib/model.js';
 import { editionsOf, lbFor } from '../lib/views.js';
 import { displayTitle } from '../lib/titles.js';
@@ -42,18 +42,42 @@ function Edition({ edition, update }) {
   );
 }
 
-export default function FilmDetail({ state, update, tmdbId, onClose }) {
+// ← / → : film précédent / suivant de la liste ; Échap : fermer. Ignoré pendant la saisie.
+function useDetailKeys(nav, onClose) {
+  useEffect(() => {
+    const onKey = (e) => {
+      if (e.altKey || e.ctrlKey || e.metaKey) return;
+      const t = e.target;
+      if (t.isContentEditable || ['INPUT', 'TEXTAREA', 'SELECT'].includes(t.tagName)) return;
+      if (e.key === 'Escape') onClose();
+      else if (nav && (e.key === 'ArrowLeft' || e.key === 'ArrowUp')) { e.preventDefault(); nav.goTo(-1); }
+      else if (nav && (e.key === 'ArrowRight' || e.key === 'ArrowDown')) { e.preventDefault(); nav.goTo(1); }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [nav, onClose]);
+}
+
+export default function FilmDetail({ state, update, tmdbId, onClose, nav }) {
   const film = state.films[tmdbId];
   const editions = editionsOf(state, tmdbId);
   const lb = lbFor(state, tmdbId);
   const [newEdition, setNewEdition] = useState(null);
   const [keyDraft, setKeyDraft] = useState(film.sortKeyOverride || '');
+  useDetailKeys(nav, onClose);
 
   return (
     <>
       <div className="drawer-backdrop" onClick={onClose} />
       <aside className="drawer">
         <div className="row" style={{ marginBottom: 12 }}>
+          {nav && nav.total > 1 && (
+            <>
+              <button className="btn small" disabled={nav.index === 0} onClick={() => nav.goTo(-1)} title="Film précédent (←)">←</button>
+              <button className="btn small" disabled={nav.index === nav.total - 1} onClick={() => nav.goTo(1)} title="Film suivant (→)">→</button>
+              <span className="muted small-text">{nav.index + 1} / {nav.total}</span>
+            </>
+          )}
           <span className="spacer" />
           <button className="btn ghost" onClick={onClose}>Fermer ✕</button>
         </div>

@@ -17,6 +17,20 @@ describe('sortKey', () => {
   it('retire les accents', () => {
     expect(sortKey(f(['Éric Rohmer'], 1986))).toBe('rohmer, eric');
   });
+  it("noms d'Asie de l'Est : nom de famille en premier", () => {
+    expect(sortKey(f(['Bong Joon-ho'], 2019))).toBe('bong, joon-ho');
+    expect(sortKey(f(['Park Chan-wook'], 2003))).toBe('park, chan-wook');
+    expect(sortKey(f(['Wong Kar-wai'], 2000))).toBe('wong, kar-wai');
+    expect(sortKey(f(['Lee Chang-dong'], 2018))).toBe('lee, chang-dong');
+    expect(sortKey(f(['Zhang Yimou'], 2002))).toBe('zhang, yimou');
+  });
+  it('garde l\'ordre occidental quand le nom est déjà « prénom nom »', () => {
+    expect(sortKey(f(['Spike Lee'], 1989))).toBe('lee, spike');
+    expect(sortKey(f(['Lee Daniels'], 2009))).toBe('daniels, lee');
+    expect(sortKey(f(['Ang Lee'], 2000))).toBe('lee, ang');
+    expect(sortKey(f(['Hirokazu Kore-eda'], 2018))).toBe('kore-eda, hirokazu');
+    expect(sortKey(f(['Kim Nguyen'], 2012))).toBe('nguyen, kim');
+  });
   it('place les films sans réalisateur en fin', () => {
     expect(sortKey(f([], 1990))).toBe('~');
   });

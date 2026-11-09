@@ -34,6 +34,7 @@ export default function App() {
   const { state, update, loadError, saveError, restore } = useCollection();
   const [view, setView] = useState('owned');
   const [detailId, setDetailId] = useState(null);
+  const [navIds, setNavIds] = useState([]); // films de la liste d'où la fiche a été ouverte, dans l'ordre affiché
   const [adding, setAdding] = useState(null); // état par défaut de l'ajout ('possede' | 'custom' | 'a_acheter')
 
   const counts = useMemo(() => state && {
@@ -45,7 +46,13 @@ export default function App() {
   if (loadError) return <CorruptScreen loadError={loadError} restore={restore} />;
   if (!state) return <div className="empty">Chargement…</div>;
 
-  const props = { state, update, openFilm: setDetailId, onAdd: setAdding };
+  const openFilm = (id, ids = []) => { setDetailId(id); setNavIds(ids); };
+  const props = { state, update, openFilm, onAdd: setAdding };
+  const navIndex = navIds.indexOf(detailId);
+  const goTo = (offset) => {
+    const id = navIds[navIndex + offset];
+    if (navIndex !== -1 && id != null && state.films[id]) setDetailId(id);
+  };
 
   return (
     <div className="app">
@@ -60,7 +67,8 @@ export default function App() {
         {view === 'settings' && <Settings state={state} update={update} />}
       </main>
       {detailId != null && state.films[detailId] && (
-        <FilmDetail state={state} update={update} tmdbId={detailId} onClose={() => setDetailId(null)} />
+        <FilmDetail key={detailId} state={state} update={update} tmdbId={detailId} onClose={() => setDetailId(null)}
+          nav={navIndex === -1 ? null : { index: navIndex, total: navIds.length, goTo }} />
       )}
       {adding && (
         <AddFilm
@@ -68,7 +76,7 @@ export default function App() {
           update={update}
           defaultState={adding}
           onClose={() => setAdding(null)}
-          onAdded={(id) => { setAdding(null); setDetailId(id); }}
+          onAdded={(id) => { setAdding(null); openFilm(id); }}
         />
       )}
     </div>

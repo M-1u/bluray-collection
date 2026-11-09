@@ -34,13 +34,14 @@
 
 - **Trois listes** — **Possédé** (ta collection), **Custom** (les jaquettes que tu fabriques) et **À acheter** (tes envies).
 - **Plusieurs éditions par film** — un même film peut être possédé en Blu-ray et voulu en 4K. Formats : 1080p, 4K, DVD, Blu-ray, Steelbook, Custom.
-- **Rangé comme ton étagère** — tri par nom de famille du réalisateur puis par année, avec un intercalaire par réalisateur. Une clé de rangement manuelle corrige les cas particuliers (Wong Kar-wai, Bong Joon-ho…).
+- **Rangé comme ton étagère** — tri par nom de famille du réalisateur puis par année, avec un intercalaire par réalisateur. Les noms coréens et chinois écrits nom en premier (Bong Joon-ho, Wong Kar-wai…) sont reconnus ; une clé de rangement manuelle corrige les autres cas particuliers.
 - **Titres** affichés `Titre original [Titre français]`.
 - **Suivi des customs** — pochette à créer → créée → imprimée, en attente de boîtier → terminée. Une custom terminée rejoint automatiquement ta collection.
 - **Ajout en deux clics** depuis TMDB : affiche, réalisateurs, genres, pays, durée, synopsis. Les affiches sont mises en cache sur ton disque.
 - **Import Letterboxd** — importe le zip d'export de Letterboxd quand tu veux : vus, notes, critiques, likes et watchlist sont **remplacés** par les nouvelles données, ta collection n'est **jamais** modifiée. Une sauvegarde est créée avant chaque import.
 - **Pré-remplissage** — au premier import, ta collection peut être créée à partir d'une liste Letterboxd `Steelbook & Blu-Ray` (le format est lu dans la description de chaque film).
 - **Statistiques** — formats, réalisateurs, genres, pays, décennies, avancement des customs ; possédés vus / pas encore vus, ta note moyenne, les films que tu as adorés mais pas encore achetés, les plus revus…
+- **Navigation au clavier** — dans la fiche d'un film, ← / → passe au film précédent ou suivant de la liste affichée, Échap ferme.
 - **Filtres** — format, vu ou pas, genre, pays, décennie, note, recherche par titre ou réalisateur.
 
 ## Installation

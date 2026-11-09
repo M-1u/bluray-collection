@@ -36,7 +36,8 @@
 
 - **Three lists** — **Owned** (your collection), **Custom** (covers you make yourself) and **To buy** (your wishlist).
 - **Several editions per film** — own a film on Blu-ray and want it in 4K. Formats: 1080p, 4K, DVD, Blu-ray, Steelbook, Custom.
-- **Sorted like your shelf** — by director's last name, then year, with a divider per director. A manual sort key handles special cases.
+- **Sorted like your shelf** — by director's last name, then year, with a divider per director. Korean and Chinese family-name-first names (Bong Joon-ho, Wong Kar-wai…) are recognised; a manual sort key handles other special cases.
+- **Keyboard navigation** — in a film's page, ← / → goes to the previous / next film of the current list, Esc closes it.
 - **Custom cover tracking** — to create → created → printed, waiting for a case → done. Finished customs join your collection automatically.
 - **Two-click adding** from TMDB: poster, directors, genres, countries, runtime, synopsis. Posters are cached locally.
 - **Letterboxd import** — import your Letterboxd export zip any time: watched films, ratings, reviews, likes and watchlist are **replaced**; your collection is **never** touched. A backup is made before each import.

@@ -33,6 +33,7 @@ export default function OwnedView({ state, openFilm, onAdd }) {
   const lb = useMemo(() => lbIndex(state), [state]);
   const films = useMemo(() => sortFilms(filterFilms(all, state, filters), state, sort), [all, state, filters, sort]);
   const hasLetterboxd = Boolean(state.letterboxd.importedAt);
+  const openInList = (id) => openFilm(id, films.map((f) => f.tmdbId));
 
   return (
     <>
@@ -64,10 +65,10 @@ export default function OwnedView({ state, openFilm, onAdd }) {
       ) : films.length === 0 ? (
         <div className="empty">Aucun film ne correspond aux filtres.</div>
       ) : mode === 'grid' ? (
-        <FilmGrid films={films} grouped={sort === 'shelf'} openFilm={openFilm}
+        <FilmGrid films={films} grouped={sort === 'shelf'} openFilm={openInList}
           metaOf={(f) => (lb.get(f.tmdbId)?.rating != null ? <> · <Stars rating={lb.get(f.tmdbId).rating} /></> : null)} />
       ) : (
-        <FilmTable films={films} state={state} lb={lb} grouped={sort === 'shelf'} openFilm={openFilm} />
+        <FilmTable films={films} state={state} lb={lb} grouped={sort === 'shelf'} openFilm={openInList} />
       )}
     </>
   );

@@ -8,6 +8,7 @@ const NEXT_LABEL = { a_creer: 'Pochette créée →', creee: 'Imprimée →', im
 export default function CustomView({ state, update, openFilm, onAdd }) {
   const groups = customEditions(state);
   const total = Object.values(groups).flat().length;
+  const ids = [...new Set(Object.values(groups).flat().map(({ film }) => film.tmdbId))];
   return (
     <>
       <div className="view-header">
@@ -24,7 +25,7 @@ export default function CustomView({ state, update, openFilm, onAdd }) {
               <div key={edition.id} className="mini-card">
                 <Poster film={film} />
                 <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
-                  <div className="title" onClick={() => openFilm(film.tmdbId)}>{displayTitle(film)}</div>
+                  <div className="title" onClick={() => openFilm(film.tmdbId, ids)}>{displayTitle(film)}</div>
                   <div className="muted small-text">{film.year}{edition.note ? ` · ${edition.note}` : ''}</div>
                   <div><button className="btn small" onClick={() => update((s) => advanceCustom(s, edition.id))}>{NEXT_LABEL[status]}</button></div>
                 </div>

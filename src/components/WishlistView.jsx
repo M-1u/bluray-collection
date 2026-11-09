@@ -5,6 +5,7 @@ import { FormatBadge, directorNames } from './format.jsx';
 
 export default function WishlistView({ state, update, openFilm, onAdd }) {
   const items = wishlist(state);
+  const ids = [...new Set(items.map(({ film }) => film.tmdbId))];
   return (
     <>
       <div className="view-header">
@@ -20,7 +21,7 @@ export default function WishlistView({ state, update, openFilm, onAdd }) {
           <thead><tr><th>Titre</th><th>Année</th><th>Réalisateur</th><th>Format</th><th>Note</th><th /></tr></thead>
           <tbody>
             {items.map(({ edition, film }) => (
-              <tr key={edition.id} className="film-row" onClick={() => openFilm(film.tmdbId)}>
+              <tr key={edition.id} className="film-row" onClick={() => openFilm(film.tmdbId, ids)}>
                 <td>{displayTitle(film)}</td>
                 <td>{film.year}</td>
                 <td className="muted">{directorNames(film)}</td>
