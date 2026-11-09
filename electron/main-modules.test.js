@@ -92,6 +92,20 @@ describe('tmdb', () => {
     expect(url.searchParams.get('append_to_response')).toBe('credits');
   });
 
+  it('details remplace un nom en écriture japonaise par le nom latin TMDB', async () => {
+    const calls = [];
+    const movie = { ...details, credits: { crew: [{ id: 55785, name: '岩井俊二', job: 'Director' }] } };
+    const tmdb = createTmdb({ apiKey: 'a'.repeat(32), fetch: fakeFetch({ '/3/movie/694': movie, '/3/person/55785': { name: 'Shunji Iwai' } }, calls) });
+    expect((await tmdb.details(694)).directors).toEqual([{ id: 55785, name: 'Shunji Iwai' }]);
+    expect(new URL(calls[1].url).searchParams.get('language')).toBe('en-US');
+  });
+
+  it('details garde le nom original si la fiche personne échoue', async () => {
+    const movie = { ...details, credits: { crew: [{ id: 7, name: '岩井俊二', job: 'Director' }] } };
+    const tmdb = createTmdb({ apiKey: 'a'.repeat(32), fetch: fakeFetch({ '/3/movie/694': movie, '/3/person/7': 401 }) });
+    expect((await tmdb.details(694)).directors).toEqual([{ id: 7, name: '岩井俊二' }]);
+  });
+
   it('jeton v4 → en-tête Bearer', async () => {
     const calls = [];
     const tmdb = createTmdb({ apiKey: 'eyJ.long.token', fetch: fakeFetch({ '/3/search/movie': { results: [] } }, calls) });

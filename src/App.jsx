@@ -1,6 +1,7 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useCollection } from './state.js';
 import { ownedFilms, customEditions, wishlist } from './lib/views.js';
+import { directorsToRomanize, renameDirectors } from './lib/directorNames.js';
 import Sidebar from './components/Sidebar.jsx';
 import Settings from './components/Settings.jsx';
 import OwnedView from './components/OwnedView.jsx';
@@ -30,12 +31,32 @@ function CorruptScreen({ loadError, restore }) {
   );
 }
 
+// Une fois par lancement : renomme via TMDB les réalisateurs enregistrés en écriture non latine.
+function useRomanizeDirectors(state, update) {
+  const done = useRef(false);
+  useEffect(() => {
+    if (done.current || !state?.settings?.tmdbApiKey) return;
+    done.current = true;
+    const ids = directorsToRomanize(state);
+    if (!ids.length) return;
+    (async () => {
+      const names = {};
+      for (const id of ids) {
+        try { names[id] = await window.api.tmdbPersonName(id); } catch { /* hors ligne : réessai au prochain lancement */ }
+      }
+      update((s) => renameDirectors(s, names));
+    })();
+  }, [state, update]);
+}
+
 export default function App() {
   const { state, update, loadError, saveError, restore } = useCollection();
   const [view, setView] = useState('owned');
   const [detailId, setDetailId] = useState(null);
   const [navIds, setNavIds] = useState([]); // films de la liste d'où la fiche a été ouverte, dans l'ordre affiché
   const [adding, setAdding] = useState(null); // état par défaut de l'ajout ('possede' | 'custom' | 'a_acheter')
+
+  useRomanizeDirectors(state, update);
 
   const counts = useMemo(() => state && {
     owned: ownedFilms(state).length,

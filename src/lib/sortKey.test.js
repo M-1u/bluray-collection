@@ -31,6 +31,11 @@ describe('sortKey', () => {
     expect(sortKey(f(['Hirokazu Kore-eda'], 2018))).toBe('kore-eda, hirokazu');
     expect(sortKey(f(['Kim Nguyen'], 2012))).toBe('nguyen, kim');
   });
+  it('noms de Hong Kong « prénom occidental, nom, prénom chinois »', () => {
+    expect(sortKey(f(['Ringo Lam Ling-tung'], 1987))).toBe('lam, ringo ling-tung');
+    expect(sortKey(f(['Benny Chan Muk-sing'], 1990))).toBe('chan, benny muk-sing');
+    expect(sortKey(f(['Rainer Werner Fassbinder'], 1974))).toBe('fassbinder, rainer werner');
+  });
   it('garde la particule avec le nom de famille', () => {
     expect(sortKey(f(['Brian De Palma'], 1976))).toBe('de palma, brian');
     expect(sortKey(f(['Gus Van Sant'], 1997))).toBe('van sant, gus');

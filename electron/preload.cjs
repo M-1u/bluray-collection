@@ -7,6 +7,7 @@ contextBridge.exposeInMainWorld('api', {
   restoreBackup: (file) => ipcRenderer.invoke('state:restore', file),
   tmdbSearch: (query, year) => ipcRenderer.invoke('tmdb:search', query, year),
   tmdbDetails: (id) => ipcRenderer.invoke('tmdb:details', id),
+  tmdbPersonName: (id) => ipcRenderer.invoke('tmdb:personName', id),
   pickZip: () => ipcRenderer.invoke('zip:pick'),
   backup: () => ipcRenderer.invoke('data:backup'),
   exportJson: () => ipcRenderer.invoke('data:export'),

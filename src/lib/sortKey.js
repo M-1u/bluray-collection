@@ -8,13 +8,18 @@ const EAST_ASIAN_SURNAMES = new Set([
 ]);
 // Aussi des prénoms occidentaux (Lee Daniels, Kim Nguyen) : pris comme nom de famille
 // seulement devant un prénom à tiret (Lee Chang-dong, Kim Ki-duk).
-const AMBIGUOUS_SURNAMES = new Set(['lee', 'kim', 'choi', 'shin', 'yoon', 'jang', 'lim', 'chan', 'ho', 'song']);
+const AMBIGUOUS_SURNAMES = new Set(['lee', 'kim', 'choi', 'shin', 'yoon', 'jang', 'lim', 'chan', 'ho', 'song', 'lam', 'lau', 'leung', 'cheung', 'yuen', 'tsang']);
 
 // Particules qui font partie du nom de famille (De Palma, Van Sant, del Toro, von Trier).
 const PARTICLES = new Set(['de', 'del', 'della', 'di', 'da', 'du', 'van', 'von', 'der', 'den', 'ter', 'le', 'la', 'dos', 'das']);
 
 function familyNameFirst([first, given]) {
   return EAST_ASIAN_SURNAMES.has(first) || (AMBIGUOUS_SURNAMES.has(first) && given.includes('-'));
+}
+
+// Hong Kong : « Ringo Lam Ling-tung » = prénom occidental, nom de famille, prénom chinois.
+function hongKongName([, family, chinese]) {
+  return (EAST_ASIAN_SURNAMES.has(family) || AMBIGUOUS_SURNAMES.has(family)) && chinese.includes('-');
 }
 
 // Clé de rangement : override manuel, sinon « nom, prénom » du 1er réalisateur crédité.
@@ -24,6 +29,7 @@ export function sortKey(film) {
   if (!first) return '~';
   const parts = normalize(first).split(' ');
   if (parts.length === 2 && familyNameFirst(parts)) return `${parts[0]}, ${parts[1]}`;
+  if (parts.length === 3 && hongKongName(parts)) return `${parts[1]}, ${parts[0]} ${parts[2]}`;
   const particle = parts.findIndex((p, i) => i > 0 && i < parts.length - 1 && PARTICLES.has(p));
   if (particle !== -1) return `${parts.slice(particle).join(' ')}, ${parts.slice(0, particle).join(' ')}`;
   const last = parts.pop();

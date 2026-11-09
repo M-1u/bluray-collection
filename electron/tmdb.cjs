@@ -6,6 +6,8 @@ const API = 'https://api.themoviedb.org/3';
 const IMAGES = 'https://image.tmdb.org/t/p/w342';
 
 const RETRIES = 3;
+// Une lettre hors alphabet latin (japonais, chinois, coréen, cyrillique…).
+const NON_LATIN = /(?!\p{Script=Latin})\p{L}/u;
 const defaultSleep = (ms) => new Promise((r) => setTimeout(r, ms));
 
 function createTmdb({ apiKey, fetch = globalThis.fetch, sleep = defaultSleep }) {
@@ -47,6 +49,21 @@ function createTmdb({ apiKey, fetch = globalThis.fetch, sleep = defaultSleep }) 
     return data.results || [];
   }
 
+  // Nom de la personne en anglais : TMDB le donne en alphabet latin (« Shunji Iwai » pour 岩井俊二).
+  async function personName(id) {
+    const p = await get(`/person/${id}`, { language: 'en-US' });
+    return p.name || null;
+  }
+
+  // Remplace les noms écrits hors alphabet latin ; garde l'original si TMDB échoue.
+  async function latinDirectors(directors) {
+    return Promise.all(directors.map(async (d) => {
+      if (!NON_LATIN.test(d.name)) return d;
+      const name = await personName(d.id).catch(() => null);
+      return name && !NON_LATIN.test(name) ? { ...d, name } : d;
+    }));
+  }
+
   async function details(id) {
     const d = await get(`/movie/${id}`, { append_to_response: 'credits' });
     return {
@@ -54,7 +71,7 @@ function createTmdb({ apiKey, fetch = globalThis.fetch, sleep = defaultSleep }) 
       originalTitle: d.original_title,
       frenchTitle: d.title,
       year: d.release_date ? Number(d.release_date.slice(0, 4)) : null,
-      directors: (d.credits?.crew || []).filter((c) => c.job === 'Director').map((c) => ({ id: c.id, name: c.name })),
+      directors: await latinDirectors((d.credits?.crew || []).filter((c) => c.job === 'Director').map((c) => ({ id: c.id, name: c.name }))),
       genres: (d.genres || []).map((g) => g.name),
       countries: (d.production_countries || []).map((c) => c.name),
       runtime: d.runtime || null,
@@ -75,7 +92,7 @@ function createTmdb({ apiKey, fetch = globalThis.fetch, sleep = defaultSleep }) 
     fs.writeFileSync(dest, Buffer.from(await res.arrayBuffer()));
   }
 
-  return { search, details, downloadPoster };
+  return { search, details, personName, downloadPoster };
 }
 
 module.exports = { createTmdb };

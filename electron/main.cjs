@@ -67,6 +67,7 @@ function registerIpc() {
 
   ipcMain.handle('tmdb:search', (_e, query, year) => tmdb().search(query, year));
   ipcMain.handle('tmdb:details', (_e, id) => tmdb().details(id));
+  ipcMain.handle('tmdb:personName', (_e, id) => tmdb().personName(id));
 
   ipcMain.handle('zip:pick', async () => {
     const res = await dialog.showOpenDialog(win, {
